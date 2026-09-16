@@ -168,7 +168,7 @@ github.com/stackitcloud/stackit-sdk-go/core/wait
 ## explicit; go 1.25
 github.com/stackitcloud/stackit-sdk-go/services/iaas/v2api
 github.com/stackitcloud/stackit-sdk-go/services/iaas/v2api/wait
-# github.com/stackitcloud/stackit-sdk-go/services/loadbalancer v1.15.1
+# github.com/stackitcloud/stackit-sdk-go/services/loadbalancer v1.15.2
 ## explicit; go 1.25
 github.com/stackitcloud/stackit-sdk-go/services/loadbalancer/v2api
 # github.com/stackitcloud/stackit-sdk-go/services/resourcemanager v0.25.1
