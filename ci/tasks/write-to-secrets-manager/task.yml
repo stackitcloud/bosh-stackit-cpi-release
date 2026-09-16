@@ -1,0 +1,18 @@
+platform: linux
+image_resource:
+  type: registry-image
+  source: &mirror_source
+    repository: registry.onstackit.cloud/scf-images/terraform
+    username: ((harbor.username))
+    password: ((harbor.password))
+
+inputs:
+- name: data
+- name: repo
+
+params:
+  VAULT:
+  VALUES:
+
+run:
+  path: repo/ci/tasks/write-to-secrets-manager/task.sh

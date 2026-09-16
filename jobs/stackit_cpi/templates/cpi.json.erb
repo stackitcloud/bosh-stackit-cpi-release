@@ -1,0 +1,61 @@
+<%=
+  params = {
+    'stackit' => {
+      'project_id'               => p('stackit.project_id'),
+      'region'                   => p('stackit.region'),
+      'service_account_json'     => p('stackit.service_account_json', ''),
+      'human_readable_vm_names'  => p('stackit.human_readable_vm_names', 'false'),
+      'auto_fix_name_and_labels' => p('stackit.auto_fix_name_and_labels', 'false'),
+    },
+    'agent' => {
+    },
+  }
+  if_p('stackit.default_ssh_key_name') do |key_name|
+    params['stackit']['default_ssh_key_name'] = key_name
+  end
+  if_p('stackit.stage_profile_json') do |stage_profile_json|
+    params['stackit']['stage_profile_json'] = stage_profile_json
+  end
+  if_p('stackit.default_security_groups') do |default_security_groups|
+    if default_security_groups.is_a?(Array)
+      params['stackit']['default_security_groups'] = default_security_groups
+    else
+      raise "Expecting stackit.default_security_groups to be an array of strings"
+    end
+  end
+  if_p('stackit.log_level') do |log_level|
+    params['stackit']['log_level'] = log_level
+  end
+  if_p('stackit.log_file') do |log_level|
+    params['stackit']['log_file'] = log_level
+  end
+  if_p('stackit.timeout') do |timeout|
+    params['stackit']['timeout'] = timeout
+  end
+  if_p('stackit.lrp_timeout') do |lrp_timeout|
+    params['stackit']['lrp_timeout'] = lrp_timeout
+  end
+  if_p('stackit.retry_count') do |retry_count|
+    params['stackit']['retry_count'] = retry_count
+  end
+  if_p('stackit.default_root_volume_type') do |default_volume_type|
+    params['stackit']['default_root_volume_type'] = default_volume_type
+  end
+  if_p('stackit.default_persistent_volume_type') do |default_volume_type|
+    params['stackit']['default_persistent_volume_type'] = default_volume_type
+  end
+
+  if_p('agent.mbus') do |mbus|
+    params['agent']['mbus'] = mbus
+  end.else do
+    if !p(['agent.nats.address', 'agent.nats.user', 'agent.nats.password'], nil).nil?
+      params['agent']['mbus'] = {
+        urls => "nats://#{p('agent.nats.user')}:#{p('agent.nats.password')}@#{p(['agent.nats.address'])}:#{p('nats.port')}",
+      }
+    end
+  end
+  if_p('ntp') do |ntp|
+    params['ntp'] = ntp
+  end
+  JSON.dump(params)
+%>

@@ -1,0 +1,5 @@
+bin/stackit-cpi
+stackit-cpi
+*.log
+*.lock
+bin/cpi.test

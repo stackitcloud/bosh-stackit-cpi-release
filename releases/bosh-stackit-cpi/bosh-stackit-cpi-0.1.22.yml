@@ -1,0 +1,43 @@
+name: bosh-stackit-cpi
+version: 0.1.22
+commit_hash: e1a5eb7
+uncommitted_changes: false
+jobs:
+- name: stackit_cpi
+  version: 45db85ba730af96447e843610fc463fd210b162c45e54634552af9b37ee72523
+  fingerprint: 45db85ba730af96447e843610fc463fd210b162c45e54634552af9b37ee72523
+  sha1: sha256:1797149299ad83d896e06c0fd3767dbedef7c6697654d9739b1e3c6f356146ce
+  packages:
+  - stackit_cpi
+packages:
+- name: golang-1-darwin
+  version: a67417f02d1513f36370d56cafc619fa3ace35d781dd33067816b0f08d1b3636
+  fingerprint: a67417f02d1513f36370d56cafc619fa3ace35d781dd33067816b0f08d1b3636
+  sha1: sha256:236ca77dd6c96e311313816bcfb4145413ca499f014d4fcc145bed312cd216ec
+  dependencies: []
+- name: golang-1-linux
+  version: 8f8128af0520fb107b1f9b339fc0a79eeb70b16efd67bc0e41d770798b2543e0
+  fingerprint: 8f8128af0520fb107b1f9b339fc0a79eeb70b16efd67bc0e41d770798b2543e0
+  sha1: sha256:f339b17b80583082ec7f4dfe7b4e511dcfda4b66e365ebe0e5a95679ee79478a
+  dependencies: []
+- name: golang-1.26-darwin
+  version: a67417f02d1513f36370d56cafc619fa3ace35d781dd33067816b0f08d1b3636
+  fingerprint: a67417f02d1513f36370d56cafc619fa3ace35d781dd33067816b0f08d1b3636
+  sha1: sha256:58ce893903f1d1d5999a56ed83b3868bc560304cf21f4a3c6149e0ff9205331e
+  dependencies: []
+- name: golang-1.26-linux
+  version: 8f8128af0520fb107b1f9b339fc0a79eeb70b16efd67bc0e41d770798b2543e0
+  fingerprint: 8f8128af0520fb107b1f9b339fc0a79eeb70b16efd67bc0e41d770798b2543e0
+  sha1: sha256:a50891830c3f12cda471e5d9c3d757d868c4d0a599d64b3968f557502f4ea420
+  dependencies: []
+- name: stackit_cpi
+  version: c99e8f09e9c94a4358e4eeeb55ab343b46d5dd746c4dd27a7bb6c1c3ccdab3bd
+  fingerprint: c99e8f09e9c94a4358e4eeeb55ab343b46d5dd746c4dd27a7bb6c1c3ccdab3bd
+  sha1: sha256:49ee2a7d79dd4d9872a2691e1c2eb4d942aa480289ebe944832b690bc05db425
+  dependencies:
+  - golang-1-linux
+  - golang-1-darwin
+license:
+  version: 8013a2125a121e5cafa9f36034fdace57c23f615fb71d6d9fe04521a8b152c80
+  fingerprint: 8013a2125a121e5cafa9f36034fdace57c23f615fb71d6d9fe04521a8b152c80
+  sha1: sha256:498ca498af75cb7b60e28545094393b9f529e335187701a51e05a3fe9de5aa39

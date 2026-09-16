@@ -1,0 +1,21 @@
+instance_groups:
+- azs:
+  - ((az))
+  instances: 1
+  jobs: []
+  name: ((vm_name))
+  networks:
+  - name: ((net_name))
+  stemcell: default
+  vm_type: ((vm_type))
+name: dummy-deployment
+releases: []
+stemcells:
+- alias: default
+  os: ((stemcell_os))
+  version: latest
+update:
+  canaries: 1
+  canary_watch_time: 1000-30000
+  max_in_flight: 10
+  update_watch_time: 1000-30000

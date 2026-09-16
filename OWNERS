@@ -1,0 +1,5 @@
+reviewers:
+- bosh-stackit-cpi-release-reviewers
+
+approvers:
+- bosh-stackit-cpi-release-approvers

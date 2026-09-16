@@ -1,0 +1,11 @@
+config/private.yml
+dev_releases
+.DS_Store
+.dev_builds/
+*.tgz
+*.tar.gz
+*.zip
+coverage.*
+src/stackit-cpi/gosec-report.json
+test-config.json
+.envrc

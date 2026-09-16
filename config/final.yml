@@ -1,0 +1,9 @@
+---
+name: bosh-stackit-cpi
+blobstore:
+  provider: s3
+  options:
+    bucket_name: scf-cpi-prod
+    host: object.storage.eu01.onstackit.cloud
+    signature_version: "4"
+    region: eu01

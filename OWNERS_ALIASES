@@ -1,0 +1,30 @@
+aliases:
+  bosh-stackit-cpi-release-reviewers:
+  - gogolok
+  - akop
+  - sleepychild
+  - fapo85
+  - saurabhkagrawal
+  - mauricebrinkmann
+  - nouseforaname
+  - cristinapauna
+  - stackit-cloudfoundry
+  - panevpla
+  - chakarovs
+  - patzeltj
+  - nikolakirilov1812
+
+  bosh-stackit-cpi-release-approvers:
+  - gogolok
+  - akop
+  - sleepychild
+  - fapo85
+  - saurabhkagrawal
+  - mauricebrinkmann
+  - nouseforaname
+  - cristinapauna
+  - stackit-cloudfoundry
+  - panevpla
+  - chakarovs
+  - patzeltj
+  - nikolakirilov1812

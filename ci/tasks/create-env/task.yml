@@ -1,0 +1,28 @@
+platform: linux
+image_resource:
+  type: registry-image
+  source:
+    repository: bosh/bosh-ecosystem-concourse
+    tag: latest
+inputs:
+- name: repo
+- name: stackit-envs
+- name: bosh-deployment
+- name: prometheus-boshrelease
+- name: data
+- name: bosh-stackit-cpi-release-test-release
+outputs:
+- name: data
+params:
+  TERRAFORM_OUTPUT:
+  MANIFEST:
+  OPS:
+  VARS:
+  VAR_FILES:
+  STATE_FILE_PATH: data/bosh-state.json
+  CREDS_FILE_PATH: data/bosh-creds.yml
+  BOSH_RC_FILE_PATH: data/bosh.rc
+  BOSH_RESOURCE_FILE_PATH: data/bosh-resource.yml
+
+run:
+  path: repo/ci/tasks/create-env/task.sh

@@ -1,0 +1,86 @@
+---
+name: stackit_cpi
+
+templates:
+  cpi.json.erb: config/cpi.json
+  cpi: bin/cpi
+
+packages:
+- stackit_cpi
+
+properties:
+  stackit.stage_profile_json:
+    description: "Stage profile JSON for non-production or custom STACKIT stages"
+  stackit.region:
+    description: "STACKIT region for resource creation"
+    default: "eu01"
+  stackit.project_id:
+    description: "STACKIT project ID where resources are created"
+  stackit.service_account_json:
+    description: "STACKIT service account JSON"
+  stackit.default_security_groups:
+    description: "Default security groups to apply to all VMs. Names and UUIDs are accepted."
+    default: []
+  stackit.default_root_volume_type:
+    description: "Default performance class for root disks"
+    default: "storage_premium_perf2"
+  stackit.default_persistent_volume_type:
+    description: "Default performance class for persistent disks"
+    default: "storage_premium_perf2"
+  stackit.log_level:
+    description: "CPI logging verbosity"
+    default: "info"
+  stackit.retry_count:
+    description: "Number of retries for failed API calls"
+    default: 3
+  stackit.timeout:
+    description: "Global timeout for API operations in seconds"
+    default: 600
+  stackit.lrp_timeout:
+    description: "Timeout for long-running operations such as stemcell uploads, in seconds"
+    default: 3600
+  stackit.human_readable_vm_names:
+    description: "Use human-readable VM names in STACKIT instead of BOSH-generated UUID names"
+    default: "true"
+  stackit.auto_fix_name_and_labels:
+    description: "Adjust VM names and label keys so they satisfy STACKIT API restrictions"
+  stackit.default_ssh_key_name:
+    description: Default STACKIT SSH key name to use when creating VMs
+
+  agent.mbus:
+    description: |
+      Agent mbus field is set on create-env invocations by the bosh-cli.
+      It contains a url with basic auth info that will be used by the agent to start an http endpoint.
+      This is used by the bosh-cli to communicate with the agent in absence of an actual mbus when
+      running create-env. This setting follows the struct layout from the agent: https://github.com/cloudfoundry/bosh-agent/blob/9977df425bfbb7d02e4c81eaeb3dcb58da4a2ebb/settings/settings.go#L306
+    example: {
+      cert: {
+        ca: string,
+        private_key: string,
+        certificate: string,
+      },
+      urls: [ string ]
+    }
+  agent.nats.user:
+    description: Username to connect to nats with
+    default: nats
+  agent.nats.password:
+    description: Password to connect to nats with
+  agent.nats.address:
+    description: Address of the nats server
+  agent.nats.port:
+    description: Port that the nats server listens on
+    default: 4222
+
+  ntp:
+    description: List of ntp server IPs. pool.ntp.org attempts to return IPs closest to your location, but you can still specify if needed.
+    default:
+      - 0.pool.ntp.org
+      - 1.pool.ntp.org
+
+  env.http_proxy:
+    description: Http proxy to connect to cloud API's
+  env.https_proxy:
+    description: Https proxy to connect to cloud API's
+  env.no_proxy:
+    description: No proxy environment variable

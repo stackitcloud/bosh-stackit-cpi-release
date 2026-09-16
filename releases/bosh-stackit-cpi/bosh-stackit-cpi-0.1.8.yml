@@ -1,0 +1,33 @@
+name: bosh-stackit-cpi
+version: 0.1.8
+commit_hash: 2d25e5e
+uncommitted_changes: false
+jobs:
+- name: stackit_cpi
+  version: 42789e65fb441590eb30f56e5d9d8d7672226958ce9499ff7e1c249f46d0a20a
+  fingerprint: 42789e65fb441590eb30f56e5d9d8d7672226958ce9499ff7e1c249f46d0a20a
+  sha1: sha256:c881728fe0b5a1517e2c461df50487684989aace288bc892732340c466a403ee
+  packages:
+  - stackit_cpi
+packages:
+- name: golang-1.25-darwin
+  version: 7cf2aceeb3b23918a586d958584fb07858879493edb28b3836afa8c6e316b64e
+  fingerprint: 7cf2aceeb3b23918a586d958584fb07858879493edb28b3836afa8c6e316b64e
+  sha1: sha256:80c1bd9d50a3764cb277957b417e008163d16ee2b063adcf8dd1790a97eb816e
+  dependencies: []
+- name: golang-1.25-linux
+  version: 18d8a51c097f1b3957720a705fd2d00e8062e50cfe48ad1ac3e06b8bf234d5ee
+  fingerprint: 18d8a51c097f1b3957720a705fd2d00e8062e50cfe48ad1ac3e06b8bf234d5ee
+  sha1: sha256:d348c133d0d0aa94fd1a59ae3a5679922cdcd1902224737a036402d5bc52a00d
+  dependencies: []
+- name: stackit_cpi
+  version: 1d27648953418760cdc5065babfba39ab2a947fc1bcffb057d80305249242fbd
+  fingerprint: 1d27648953418760cdc5065babfba39ab2a947fc1bcffb057d80305249242fbd
+  sha1: sha256:55534de26510a4bf08002719a4277cec534f5fe76662f54c4ceb3d2645e8e6f9
+  dependencies:
+  - golang-1.25-linux
+  - golang-1.25-darwin
+license:
+  version: 8013a2125a121e5cafa9f36034fdace57c23f615fb71d6d9fe04521a8b152c80
+  fingerprint: 8013a2125a121e5cafa9f36034fdace57c23f615fb71d6d9fe04521a8b152c80
+  sha1: sha256:498ca498af75cb7b60e28545094393b9f529e335187701a51e05a3fe9de5aa39

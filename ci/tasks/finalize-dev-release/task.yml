@@ -1,0 +1,25 @@
+platform: linux
+image_resource:
+  type: registry-image
+  source:
+    repository: schwarzit-xx-sit-appcloud-docker-local.jfrog.io/stackit-cf-deployment-concourse-tasks
+    username: ((jfrog_user))
+    password: ((jfrog_password))
+    tag: v0.0.14
+container_limits:
+  cpu: 2
+  memory: 1gb
+inputs:
+  - name: repo
+  - name: release
+outputs:
+  - name: builds
+  - name: repo
+params:
+  VERSION:
+  PRIVATE_YML:
+  GIT_USER:
+  GIT_EMAIL:
+run:
+  path: repo/ci/tasks/finalize-dev-release/task.sh
+

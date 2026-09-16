@@ -1,0 +1,5 @@
+- type: replace
+  path: /releases/name=bosh-stackit-cpi?
+  value:
+    name: bosh-stackit-cpi
+    url: file://../bosh-stackit-cpi-release-test-release/dev.tgz

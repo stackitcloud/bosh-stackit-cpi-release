@@ -1,0 +1,20 @@
+platform: linux
+image_resource:
+  type: registry-image
+  source:
+    # we wan't to sync the bosh golang release go version with our repo. The below
+    # image get's published by the OSS ci each time a new golang version makes it
+    # into the golang-package-release
+    repository: ghcr.io/cloudfoundry/bosh/golang-release
+    tag: latest
+
+inputs:
+- name:  repo
+
+params:
+  # test config json provides creds to the projects where the integration tests
+  # should be executed
+  TEST_CONFIG:
+
+run:
+  path: repo/ci/tasks/integration-test/task.sh
