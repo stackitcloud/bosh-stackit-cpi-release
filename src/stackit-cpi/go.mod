@@ -9,7 +9,7 @@ require (
 	github.com/onsi/gomega v1.43.0
 	github.com/stackitcloud/stackit-sdk-go/core v0.27.0
 	github.com/stackitcloud/stackit-sdk-go/services/iaas v1.14.3
-	github.com/stackitcloud/stackit-sdk-go/services/loadbalancer v1.15.1
+	github.com/stackitcloud/stackit-sdk-go/services/loadbalancer v1.15.2
 	go.yaml.in/yaml/v3 v3.0.5
 	golang.org/x/crypto v0.57.0
 	gopkg.in/yaml.v3 v3.0.1
