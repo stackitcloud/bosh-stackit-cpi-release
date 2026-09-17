@@ -136,21 +136,9 @@ default_root_volume_type: storage_premium_perf2
 default_persistent_volume_type: storage_premium_perf2
 ```
 
-Common performance classes:
-
-| Type | IOPS | Throughput |
-| ---- | ---- | ---------- |
-| `storage_premium_perf0` | 100 | 32 MB/s |
-| `storage_premium_perf2` | 1000 | 128 MB/s |
-| `storage_premium_perf4` | 2500 | 256 MB/s |
-| `storage_premium_perf6` | 5000 | 512 MB/s |
-| `storage_premium_perf8` | 10000 | 768 MB/s |
-| `storage_premium_perf10` | 15000 | 1000 MB/s |
-| `storage_premium_perf12` | 20000 | 1280 MB/s |
-| `storage_premium_perf14` | 25000 | 400 MB/s |
-| `storage_premium_perf16` | 30000 | 450 MB/s |
-| `storage_premium_perf18` | 35000 | 500 MB/s |
-| `storage_premium_perf20` | 40000 | 550 MB/s |
+For the currently available performance classes, including their IOPS and
+throughput limits, see the [STACKIT Block Storage service plans
+documentation](https://docs.stackit.cloud/products/storage/block-storage/basics/service-plans/#currently-available-service-plans-performance-classes).
 
 ### `default_security_groups`
 
