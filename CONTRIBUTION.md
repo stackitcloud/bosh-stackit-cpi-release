@@ -16,7 +16,7 @@ in [SECURITY.md](SECURITY.md) instead.
 
 The CPI source is in `src/stackit-cpi`. You need:
 
-- Go 1.24 or newer
+- The Go version declared in `src/stackit-cpi/go.mod` or newer
 - BOSH CLI, if you are building a BOSH release
 - STACKIT credentials only for integration tests
 
@@ -36,8 +36,7 @@ cd src/stackit-cpi
 GOFLAGS=-mod=mod go build -o ../../bin/stackit-cpi .
 ```
 
-See the [development documentation](docs/README.md) and the main
-[README](README.md) for configuration and deployment details.
+See the main [README](README.md) for configuration and deployment details.
 
 ## Tests and checks
 
