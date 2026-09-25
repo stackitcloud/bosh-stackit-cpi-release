@@ -274,7 +274,7 @@ jobs:
       input_mapping:
         repo: bosh-stackit-cpi-release-pull-request
       params:
-        GOSEC_VERSION: v2.22.0 # pin back because of https://github.com/securego/gosec/issues/1500
+        GOSEC_VERSION: latest
       attempts: 1
       container_limits:
         memory: 0
