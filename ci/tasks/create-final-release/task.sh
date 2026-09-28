@@ -16,6 +16,7 @@ pushd repo
   git config --global user.name "${GIT_USER}"
   git config --global user.email "${GIT_EMAIL}"
   git add .final_builds/packages/stackit_cpi/index.yml
+  git add .final_builds/license/index.yml
   git add .final_builds/jobs/stackit_cpi/index.yml
 
   git add "releases/bosh-stackit-cpi/bosh-stackit-cpi-${VERSION}.yml"
