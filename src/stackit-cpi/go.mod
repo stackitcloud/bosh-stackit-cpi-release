@@ -6,7 +6,7 @@ require (
 	github.com/cloudfoundry/bosh-agent/v2 v2.892.0
 	github.com/google/uuid v1.6.0
 	github.com/onsi/ginkgo/v2 v2.33.0
-	github.com/onsi/gomega v1.43.1
+	github.com/onsi/gomega v1.44.0
 	github.com/stackitcloud/stackit-sdk-go/core v0.27.0
 	github.com/stackitcloud/stackit-sdk-go/services/iaas v1.14.3
 	github.com/stackitcloud/stackit-sdk-go/services/loadbalancer v1.15.2
