@@ -7,8 +7,8 @@ require (
 	github.com/google/uuid v1.6.0
 	github.com/onsi/ginkgo/v2 v2.33.0
 	github.com/onsi/gomega v1.43.1
-	github.com/stackitcloud/stackit-sdk-go/core v0.27.0
-	github.com/stackitcloud/stackit-sdk-go/services/iaas v1.14.3
+	github.com/stackitcloud/stackit-sdk-go/core v0.27.1
+	github.com/stackitcloud/stackit-sdk-go/services/iaas v1.14.5
 	github.com/stackitcloud/stackit-sdk-go/services/loadbalancer v1.15.2
 	go.yaml.in/yaml/v3 v3.0.5
 	golang.org/x/crypto v0.57.0
@@ -39,7 +39,7 @@ require (
 	github.com/mitchellh/mapstructure v1.5.0 // indirect
 	github.com/nu7hatch/gouuid v0.0.0-20131221200532-179d4d0c4d8d // indirect
 	github.com/rogpeppe/go-internal v1.14.1 // indirect
-	github.com/stackitcloud/stackit-sdk-go/services/resourcemanager v0.25.1 // indirect
+	github.com/stackitcloud/stackit-sdk-go/services/resourcemanager v0.26.0 // indirect
 	go4.org/netipx v0.0.0-20260823151212-3075585bcbeb // indirect
 	golang.org/x/exp/typeparams v0.0.0-20260908205506-85c1c2202aba // indirect
 	golang.org/x/mod v0.41.0 // indirect

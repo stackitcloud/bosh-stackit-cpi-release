@@ -155,7 +155,7 @@ github.com/onsi/gomega/matchers/support/goraph/util
 github.com/onsi/gomega/types
 # github.com/rogpeppe/go-internal v1.14.1
 ## explicit; go 1.23
-# github.com/stackitcloud/stackit-sdk-go/core v0.27.0
+# github.com/stackitcloud/stackit-sdk-go/core v0.27.1
 ## explicit; go 1.25
 github.com/stackitcloud/stackit-sdk-go/core/auth
 github.com/stackitcloud/stackit-sdk-go/core/clients
@@ -164,14 +164,14 @@ github.com/stackitcloud/stackit-sdk-go/core/oapierror
 github.com/stackitcloud/stackit-sdk-go/core/oidcadapters
 github.com/stackitcloud/stackit-sdk-go/core/utils
 github.com/stackitcloud/stackit-sdk-go/core/wait
-# github.com/stackitcloud/stackit-sdk-go/services/iaas v1.14.3
+# github.com/stackitcloud/stackit-sdk-go/services/iaas v1.14.5
 ## explicit; go 1.25
 github.com/stackitcloud/stackit-sdk-go/services/iaas/v2api
 github.com/stackitcloud/stackit-sdk-go/services/iaas/v2api/wait
 # github.com/stackitcloud/stackit-sdk-go/services/loadbalancer v1.15.2
 ## explicit; go 1.25
 github.com/stackitcloud/stackit-sdk-go/services/loadbalancer/v2api
-# github.com/stackitcloud/stackit-sdk-go/services/resourcemanager v0.25.1
+# github.com/stackitcloud/stackit-sdk-go/services/resourcemanager v0.26.0
 ## explicit; go 1.25
 github.com/stackitcloud/stackit-sdk-go/services/resourcemanager/v0api
 # go.yaml.in/yaml/v3 v3.0.5
