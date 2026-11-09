@@ -9,4 +9,4 @@ updates:
     directory: "/src/stackit-cpi/"
     schedule:
       interval: "weekly"
-
+    target-branch: "develop"
