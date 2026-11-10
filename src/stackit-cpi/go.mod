@@ -11,7 +11,7 @@ require (
 	github.com/stackitcloud/stackit-sdk-go/services/iaas v1.15.1
 	github.com/stackitcloud/stackit-sdk-go/services/loadbalancer v1.15.2
 	go.yaml.in/yaml/v3 v3.0.5
-	golang.org/x/crypto v0.57.0
+	golang.org/x/crypto v0.58.0
 	gopkg.in/yaml.v3 v3.0.1
 )
 
@@ -43,11 +43,11 @@ require (
 	go4.org/netipx v0.0.0-20260823151212-3075585bcbeb // indirect
 	golang.org/x/exp/typeparams v0.0.0-20260908205506-85c1c2202aba // indirect
 	golang.org/x/mod v0.41.0 // indirect
-	golang.org/x/net v0.59.0 // indirect
-	golang.org/x/sync v0.23.0 // indirect
-	golang.org/x/sys v0.48.0 // indirect
-	golang.org/x/text v0.42.0 // indirect
-	golang.org/x/tools v0.50.0 // indirect
+	golang.org/x/net v0.60.0 // indirect
+	golang.org/x/sync v0.24.0 // indirect
+	golang.org/x/sys v0.49.0 // indirect
+	golang.org/x/text v0.43.0 // indirect
+	golang.org/x/tools v0.51.0 // indirect
 	honnef.co/go/tools v0.8.1 // indirect
 	inet.af/wf v0.0.0-20221017222439-36129f591884 // indirect
 )
