@@ -1,6 +1,6 @@
 module github.com/stackitcloud/stackit-cpi
 
-go 1.27.3
+go 1.27.4
 
 require (
 	github.com/cloudfoundry/bosh-agent/v2 v2.892.0
