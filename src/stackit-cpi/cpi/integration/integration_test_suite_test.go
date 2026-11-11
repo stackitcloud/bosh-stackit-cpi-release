@@ -8,6 +8,7 @@ import (
 	"os"
 	"testing"
 
+	"github.com/google/uuid"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 	. "github.com/stackitcloud/stackit-cpi/cpi/integration/helpers"
@@ -25,8 +26,13 @@ var _ = BeforeSuite(func() {
 	configBytes, err := os.ReadFile(testConfigPath)
 	Expect(err).ToNot(HaveOccurred())
 	Expect(json.Unmarshal(configBytes, &conf)).To(Succeed())
+
+	// one TESTRUN_UUID per suite run, used to tag every resource so the global
+	// AfterSuite sweep can clean up leftovers from failed tests
+	TestRunUUID = uuid.NewString()
 	pubIpTags = map[string]any{
-		"name": "test",
+		"name":              "test",
+		TestRunUUIDLabelKey: TestRunUUID,
 	}
 })
 

@@ -48,7 +48,8 @@ var _ = Describe("creating and deleting VMs", func() {
 			testCPI.Config.DefaultSSHKeyName = testKey.Name
 
 			network, err = iaasSDKClient.DefaultAPI.CreateNetwork(context.Background(), testCPI.Config.ProjectID, testCPI.Config.RegionID).CreateNetworkPayload(iaas.CreateNetworkPayload{
-				Name: uuid.NewString(),
+				Name:   uuid.NewString(),
+				Labels: map[string]any{TestRunUUIDLabelKey: TestRunUUID},
 				Ipv4: &iaas.CreateNetworkIPv4{
 					CreateNetworkIPv4WithPrefixLength: &iaas.CreateNetworkIPv4WithPrefixLength{
 						Nameservers:  []string{"8.8.8.8"},
@@ -60,7 +61,7 @@ var _ = Describe("creating and deleting VMs", func() {
 			Expect(err).ToNot(HaveOccurred())
 		})
 		AfterAll(func() {
-			Eventually(iaasSDKClient.DefaultAPI.DeleteNetwork(context.Background(), testCPI.Config.ProjectID, testCPI.Config.RegionID, network.GetId()).Execute, "2m").Should(Succeed())
+			CleanupNetwork(iaasSDKClient, testCPI.Config.ProjectID, testCPI.Config.RegionID, network.GetId())
 			CleanupSecGrp(secGrp, testCPI, iaasSDKClient)
 			testKey.Delete()
 		})
@@ -188,27 +189,13 @@ var _ = Describe("creating and deleting VMs", func() {
 			testCPI.Config.DefaultSSHKeyName = testKey.Name
 
 			vmArgs = conf.Qa.DefaultCreateVMArgs(secGrp)
-			pubIP, err = iaasSDKClient.DefaultAPI.CreatePublicIP(context.Background(), testCPI.Config.ProjectID, testCPI.Config.RegionID).CreatePublicIPPayload(iaas.CreatePublicIPPayload{AdditionalProperties: pubIpTags}).Execute()
+			pubIP, err = iaasSDKClient.DefaultAPI.CreatePublicIP(context.Background(), testCPI.Config.ProjectID, testCPI.Config.RegionID).CreatePublicIPPayload(iaas.CreatePublicIPPayload{Labels: pubIpTags}).Execute()
 			Expect(err).ToNot(HaveOccurred())
 		})
 		AfterAll(func() {
-			// the last test should've deleted the vm. But in case we didn't get there, we should double check
-			vm, err := testCPI.SClient.GetVM(vmID)
-			// check if it's already gone
-			if err != nil {
-				if !lib.ContainsOpenAPIErrorWithStatusCode(err, http.StatusNotFound) {
-					Expect(testCPI.DeleteServer(vm)).To(Succeed())
-				}
-			}
 			CleanupVM(vmID, *testCPI)
 			testKey.Delete()
-			Eventually(func() error {
-				err = iaasSDKClient.DefaultAPI.DeletePublicIP(context.Background(), testCPI.Config.ProjectID, testCPI.Config.RegionID, pubIP.GetId()).Execute()
-				if err != nil && lib.ContainsOpenAPIErrorWithStatusCode(err, http.StatusNotFound) {
-					return nil
-				}
-				return err
-			}, "2m").Should(Succeed())
+			CleanupPublicIP(iaasSDKClient, testCPI.Config.ProjectID, testCPI.Config.RegionID, pubIP.GetId())
 			CleanupSecGrp(secGrp, testCPI, iaasSDKClient)
 		})
 
@@ -583,8 +570,12 @@ var _ = Describe("creating and deleting VMs", func() {
 			return true
 		}
 		AfterEach(func() {
-			Eventually(testCPI.DeleteServer(vm), "2m").Should(Succeed())
-			testCPI.AttemptToCleanOrphanedNICS(lib.NicData{Networks: vm.GetNics()})
+			if vm != nil {
+				if err := testCPI.DeleteServer(vm); err != nil {
+					fmt.Printf("WARN: failed to delete server: %v\n", err)
+				}
+				testCPI.AttemptToCleanOrphanedNICS(lib.NicData{Networks: vm.GetNics()})
+			}
 			for _, sg := range testSecGrps {
 				CleanupSecGrp(sg, testCPI, iaasSDKClient)
 			}

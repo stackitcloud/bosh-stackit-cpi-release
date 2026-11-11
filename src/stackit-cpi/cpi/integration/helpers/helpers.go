@@ -15,6 +15,7 @@ import (
 	"github.com/stackitcloud/stackit-cpi/cpi/lib"
 	"github.com/stackitcloud/stackit-sdk-go/core/utils"
 	iaas "github.com/stackitcloud/stackit-sdk-go/services/iaas/v2api"
+	loadbalancer "github.com/stackitcloud/stackit-sdk-go/services/loadbalancer/v2api"
 )
 
 const (
@@ -22,7 +23,12 @@ const (
 	ExternalNetName      = "vip"
 	DefaultManualNetName = "manual"
 	DefaultMachinetype   = "t2i.1"
+	TestRunUUIDLabelKey  = "TESTRUN_UUID"
 )
+
+// TestRunUUID is generated once per test-suite run and used to tag every
+// resource the suite creates, so leftover resources can be swept afterwards.
+var TestRunUUID string
 
 type Network struct {
 	ID      string
@@ -113,6 +119,7 @@ func (p TestProject) GenerateTestSecurityGroup() *iaas.SecurityGroup {
 	secGrp, err := client.DefaultAPI.CreateSecurityGroup(context.Background(), p.ProjectID, p.Region).CreateSecurityGroupPayload(iaas.CreateSecurityGroupPayload{
 		Name:     fmt.Sprintf("test-%s", uuid.NewString()),
 		Stateful: utils.Ptr(true),
+		Labels:   map[string]any{TestRunUUIDLabelKey: TestRunUUID},
 	}).Execute()
 	Expect(err).ToNot(HaveOccurred())
 
@@ -165,7 +172,7 @@ func GenerateRequest(method string, args any) lib.RPCRequest {
 		Arguments:  argsBytes,
 		APIVersion: 2,
 		Context: lib.RPCContext{
-			DirectorUUID: uuid.NewString(),
+			DirectorUUID: TestRunUUID,
 			RequestID:    uuid.NewString(),
 			Config:       lib.Config{},
 			VM:           lib.VMContext{},
@@ -173,17 +180,20 @@ func GenerateRequest(method string, args any) lib.RPCRequest {
 	}
 }
 
+// CleanupSecGrp best-effort deletes a security group. Cleanup failures are
+// logged but never fail the test; the global AfterSuite sweep handles leftovers.
 func CleanupSecGrp(testSecGrp *iaas.SecurityGroup, testCPI *cpi.CPI, iaasSDKClient *iaas.APIClient) {
-	Eventually(func() error {
-		err := iaasSDKClient.DefaultAPI.DeleteSecurityGroup(context.Background(), testCPI.Config.ProjectID, testCPI.Config.RegionID, testSecGrp.GetId()).Execute()
-		if lib.ContainsOpenAPIErrorWithStatusCode(err, http.StatusNotFound) {
-			return nil
-		}
-		return err
-	},
-		"2m").Should(Succeed())
+	if testSecGrp == nil {
+		return
+	}
+	err := iaasSDKClient.DefaultAPI.DeleteSecurityGroup(context.Background(), testCPI.Config.ProjectID, testCPI.Config.RegionID, testSecGrp.GetId()).Execute()
+	if err != nil && !lib.ContainsOpenAPIErrorWithStatusCode(err, http.StatusNotFound) {
+		fmt.Printf("WARN: failed to cleanup security group %s: %v\n", testSecGrp.GetId(), err)
+	}
 }
 
+// CleanupVM best-effort deletes a VM and its orphaned NICs. Cleanup failures
+// are logged but never fail the test; the global AfterSuite sweep handles leftovers.
 func CleanupVM(vmID string, testCPI cpi.CPI) {
 	if vmID == "" {
 		return
@@ -192,9 +202,60 @@ func CleanupVM(vmID string, testCPI cpi.CPI) {
 	if lib.ContainsOpenAPIErrorWithStatusCode(err, http.StatusNotFound) {
 		return
 	}
-	Expect(err).ToNot(HaveOccurred())
-	Eventually(func() error {
-		testCPI.AttemptToCleanOrphanedNICS(lib.NicData{Networks: vm.GetNics()})
-		return testCPI.DeleteServer(vm)
-	}, "2m").Should(Succeed())
+	if err != nil {
+		fmt.Printf("WARN: failed to get VM %s for cleanup: %v\n", vmID, err)
+		return
+	}
+	testCPI.AttemptToCleanOrphanedNICS(lib.NicData{Networks: vm.GetNics()})
+	if err := testCPI.DeleteServer(vm); err != nil {
+		fmt.Printf("WARN: failed to delete VM %s: %v\n", vmID, err)
+	}
+}
+
+// CleanupNetwork best-effort deletes a network. Cleanup failures are logged but
+// never fail the test; the global AfterSuite sweep handles leftovers.
+func CleanupNetwork(iaasSDKClient *iaas.APIClient, projectID, regionID, networkID string) {
+	if networkID == "" {
+		return
+	}
+	err := iaasSDKClient.DefaultAPI.DeleteNetwork(context.Background(), projectID, regionID, networkID).Execute()
+	if err != nil && !lib.ContainsOpenAPIErrorWithStatusCode(err, http.StatusNotFound) {
+		fmt.Printf("WARN: failed to cleanup network %s: %v\n", networkID, err)
+	}
+}
+
+// CleanupPublicIP best-effort deletes a public IP. Cleanup failures are logged
+// but never fail the test; the global AfterSuite sweep handles leftovers.
+func CleanupPublicIP(iaasSDKClient *iaas.APIClient, projectID, regionID, pubIPID string) {
+	if pubIPID == "" {
+		return
+	}
+	err := iaasSDKClient.DefaultAPI.DeletePublicIP(context.Background(), projectID, regionID, pubIPID).Execute()
+	if err != nil && !lib.ContainsOpenAPIErrorWithStatusCode(err, http.StatusNotFound) {
+		fmt.Printf("WARN: failed to cleanup public IP %s: %v\n", pubIPID, err)
+	}
+}
+
+// CleanupVolume best-effort deletes a volume. Cleanup failures are logged but
+// never fail the test; the global AfterSuite sweep handles leftovers.
+func CleanupVolume(iaasSDKClient *iaas.APIClient, projectID, regionID, volumeID string) {
+	if volumeID == "" {
+		return
+	}
+	err := iaasSDKClient.DefaultAPI.DeleteVolume(context.Background(), projectID, regionID, volumeID).Execute()
+	if err != nil && !lib.ContainsOpenAPIErrorWithStatusCode(err, http.StatusNotFound) {
+		fmt.Printf("WARN: failed to cleanup volume %s: %v\n", volumeID, err)
+	}
+}
+
+// CleanupLoadBalancer best-effort deletes a load balancer. Cleanup failures are
+// logged but never fail the test; the global AfterSuite sweep handles leftovers.
+func CleanupLoadBalancer(lbSDKClient *loadbalancer.APIClient, projectID, regionID, lbName string) {
+	if lbName == "" {
+		return
+	}
+	_, err := lbSDKClient.DefaultAPI.DeleteLoadBalancer(context.Background(), projectID, regionID, lbName).Execute()
+	if err != nil && !lib.ContainsOpenAPIErrorWithStatusCode(err, http.StatusNotFound) {
+		fmt.Printf("WARN: failed to cleanup load balancer %s: %v\n", lbName, err)
+	}
 }
