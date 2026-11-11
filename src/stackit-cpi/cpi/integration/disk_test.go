@@ -41,9 +41,7 @@ var _ = Describe("Disks", func() {
 		AfterAll(func() {
 			iaasSDKClient = conf.Prod.GetStackitIaasClient()
 			CleanupVM(vmID, *testCPI)
-			ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
-			defer cancel()
-			Expect(iaasSDKClient.DefaultAPI.DeleteVolume(ctx, testCPI.Config.ProjectID, testCPI.Config.RegionID, diskID).Execute()).To(Succeed())
+			CleanupVolume(iaasSDKClient, testCPI.Config.ProjectID, testCPI.Config.RegionID, diskID)
 			CleanupSecGrp(testSecGrp, testCPI, iaasSDKClient)
 			testKey.Delete()
 		})
@@ -133,11 +131,14 @@ var _ = Describe("Disks", func() {
 					AvailabilityZone: fmt.Sprintf("%s-1", conf.Prod.Region),
 					Name:             utils.Ptr(fmt.Sprintf("test-%s", uuid.NewString())),
 					Size:             utils.Ptr(int64(10)),
+					Labels:           map[string]any{TestRunUUIDLabelKey: TestRunUUID},
 				}).Execute()
 				Expect(err).ToNot(HaveOccurred())
 			})
 			AfterEach(func() {
-				Eventually(iaasSDKClient.DefaultAPI.DeleteVolume(context.Background(), testCPI.Config.ProjectID, testCPI.Config.RegionID, disk.GetId()).Execute, "2m", "5s").Should(Succeed())
+				if disk != nil {
+					CleanupVolume(iaasSDKClient, testCPI.Config.ProjectID, testCPI.Config.RegionID, disk.GetId())
+				}
 			})
 			It("will return a result with exists set to true", func() {
 				req := GenerateRequest(lib.HasDisk, []string{disk.GetId()})
@@ -207,7 +208,7 @@ var _ = Describe("Disks", func() {
 		})
 		AfterAll(func() {
 			CleanupVM(vmID, *testCPI)
-			Eventually(iaasSDKClient.DefaultAPI.DeleteVolume(context.Background(), testCPI.Config.ProjectID, testCPI.Config.RegionID, diskID).Execute, "60s").Should(Succeed())
+			CleanupVolume(iaasSDKClient, testCPI.Config.ProjectID, testCPI.Config.RegionID, diskID)
 			testKey.Delete()
 			CleanupSecGrp(secGrp, testCPI, iaasSDKClient)
 		})
