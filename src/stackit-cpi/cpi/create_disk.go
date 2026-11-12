@@ -80,9 +80,10 @@ func (c *CPI) CreateDisk(req lib.RPCRequest) (resp *lib.RPCResponse, err error) 
 
 	// Add Labels (e.g., "tags")
 	tags := map[string]any{
-		lib.CreatedByBoshLabelKey: lib.CreatedByBoshLabelValue,
-		"associated_vm_cid":       args.ServerId,
-		"creation_date":           time.Now().UTC().Format("20060102_150405"),
+		lib.CreatedByBoshLabelKey:   lib.CreatedByBoshLabelValue,
+		lib.BoshDirectorUUIDKeyName: req.Context.DirectorUUID,
+		"associated_vm_cid":         args.ServerId,
+		"creation_date":             time.Now().UTC().Format("20060102_150405"),
 	}
 	createVolumePayload.Labels = tags
 

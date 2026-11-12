@@ -349,9 +349,18 @@ func (net UbuntuNetManager) writeDHCPConfiguration(dnsServers []string, opts bos
 	return changed, nil
 }
 
+// The bosh-agent expects this file to be used for the network configuration
+// Using 09- to make sure it takes priority over any other files
 func interfaceConfigurationFile(name string) string {
-	interfaceBasename := fmt.Sprintf("10_%s.network", name)
+	interfaceBasename := fmt.Sprintf("09-%s.network", name)
 	return filepath.Join(systemdNetworkFolder, interfaceBasename)
+}
+
+// Guard: omit when no cloud-config dns so the DHCP-provided DNS on the link stays the catch-all.
+func setDNSDefaultRoute(networkSection *ini.Section, dnsServers []string) {
+	if len(dnsServers) > 0 {
+		networkSection.AddKey("DNSDefaultRoute", "no")
+	}
 }
 
 func (net UbuntuNetManager) writeNetworkInterfaces(
@@ -517,6 +526,7 @@ func (net UbuntuNetManager) writeStaticInterfaceConfiguration(configs StaticInte
 	for _, dnsServer := range dnsServers {
 		networkSection.AddKey("DNS", dnsServer)
 	}
+	setDNSDefaultRoute(networkSection, dnsServers)
 	file.AppendSection(networkSection)
 
 	// Route Sections
@@ -567,6 +577,7 @@ func (net UbuntuNetManager) writeDynamicInterfaceConfiguration(configs DHCPInter
 	for _, dnsServer := range dnsServers {
 		networkSection.AddKey("DNS", dnsServer)
 	}
+	setDNSDefaultRoute(networkSection, dnsServers)
 	file.AppendSection(networkSection)
 
 	// DHCP Section
