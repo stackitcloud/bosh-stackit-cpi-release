@@ -7,6 +7,7 @@ import (
 	"crypto/x509"
 	"encoding/pem"
 	"fmt"
+	"net/http"
 	"os"
 	"path/filepath"
 	"time"
@@ -30,7 +31,10 @@ type TestSSHKey struct {
 }
 
 func (t TestSSHKey) Delete() {
-	Expect(t.client.DefaultAPI.DeleteKeyPair(context.Background(), t.Name).Execute()).To(Succeed())
+	err := t.client.DefaultAPI.DeleteKeyPair(context.Background(), t.Name).Execute()
+	if err != nil && !lib.ContainsOpenAPIErrorWithStatusCode(err, http.StatusNotFound) {
+		fmt.Printf("WARN: failed to cleanup key pair %s: %v\n", t.Name, err)
+	}
 }
 
 func (p TestProject) SSHTunnelConnection(target string, privateKeyPath string) *ssh.Client {
@@ -142,6 +146,7 @@ func (p TestProject) GenerateSSHKey() TestSSHKey {
 	keyPair, err := keyPairPayload.CreateKeyPairPayload(iaas.CreateKeyPairPayload{
 		Name:      utils.Ptr(filepath.Base(privateKeyFile.Name())),
 		PublicKey: string(ssh.MarshalAuthorizedKey(pub)),
+		Labels:    map[string]any{TestRunUUIDLabelKey: TestRunUUID},
 	}).Execute()
 	Expect(err).ToNot(HaveOccurred())
 

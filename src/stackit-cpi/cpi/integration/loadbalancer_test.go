@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"maps"
 	"math/rand/v2"
-	"net/http"
 	"slices"
 	"sync"
 
@@ -28,31 +27,20 @@ var _ = Describe("handling Loadbalancer", func() {
 	var lbSDKClient *loadbalancer.APIClient
 	var iaasSDKClient *iaas.APIClient
 	var wg sync.WaitGroup
-	var lb *loadbalancer.LoadBalancer
 	var secGrp *iaas.SecurityGroup
 	var testKey helpers.TestSSHKey
 	var pubIP *iaas.PublicIp
 	var vmID string
 	Describe("TCP Loadbalancing", Ordered, func() {
 		AfterAll(func() {
-			for _, vmID := range slices.Collect(maps.Keys(createdVMs)) {
-				helpers.CleanupVM(vmID, *testCPI)
+			if testCPI != nil {
+				for _, vmID := range slices.Collect(maps.Keys(createdVMs)) {
+					helpers.CleanupVM(vmID, *testCPI)
+				}
+				helpers.CleanupLoadBalancer(lbSDKClient, testCPI.Config.ProjectID, testCPI.Config.RegionID, createVMArgs.Properties.LoadBalancer.Name)
+				helpers.CleanupPublicIP(iaasSDKClient, testCPI.Config.ProjectID, testCPI.Config.RegionID, pubIP.GetId())
+				helpers.CleanupSecGrp(secGrp, testCPI, iaasSDKClient)
 			}
-			Eventually(func() error {
-				_, err := lbSDKClient.DefaultAPI.DeleteLoadBalancer(context.Background(), testCPI.Config.ProjectID, testCPI.Config.RegionID, lb.GetName()).Execute()
-				if lib.ContainsOpenAPIErrorWithStatusCode(err, http.StatusNotFound) {
-					return nil
-				}
-				return err
-			}, "2m").Should(Succeed())
-			Eventually(func() error {
-				err := iaasSDKClient.DefaultAPI.DeletePublicIP(context.Background(), testCPI.Config.ProjectID, testCPI.Config.RegionID, pubIP.GetId()).Execute()
-				if lib.ContainsOpenAPIErrorWithStatusCode(err, http.StatusNotFound) {
-					return nil
-				}
-				return err
-			}, "2m").Should(Succeed())
-			helpers.CleanupSecGrp(secGrp, testCPI, iaasSDKClient)
 			testKey.Delete()
 		})
 		BeforeAll(func() {
@@ -64,14 +52,15 @@ var _ = Describe("handling Loadbalancer", func() {
 			iaasSDKClient = conf.Prod.GetStackitIaasClient()
 
 			var err error
-			pubIP, err = iaasSDKClient.DefaultAPI.CreatePublicIP(context.Background(), testCPI.Config.ProjectID, testCPI.Config.RegionID).CreatePublicIPPayload(iaas.CreatePublicIPPayload{AdditionalProperties: pubIpTags}).Execute()
+			pubIP, err = iaasSDKClient.DefaultAPI.CreatePublicIP(context.Background(), testCPI.Config.ProjectID, testCPI.Config.RegionID).CreatePublicIPPayload(iaas.CreatePublicIPPayload{Labels: pubIpTags}).Execute()
 			Expect(err).ToNot(HaveOccurred())
 
 			secGrp = conf.Prod.GenerateTestSecurityGroup()
 			createVMArgs = conf.Prod.DefaultCreateVMArgs(secGrp)
 			lbName := utils.Ptr(uuid.NewString())
-			lb, err = lbSDKClient.DefaultAPI.CreateLoadBalancer(context.Background(), testCPI.Config.ProjectID, testCPI.Config.RegionID).CreateLoadBalancerPayload(loadbalancer.CreateLoadBalancerPayload{
-				Name: lbName,
+			_, err = lbSDKClient.DefaultAPI.CreateLoadBalancer(context.Background(), testCPI.Config.ProjectID, testCPI.Config.RegionID).CreateLoadBalancerPayload(loadbalancer.CreateLoadBalancerPayload{
+				Name:   lbName,
+				Labels: utils.Ptr(map[string]string{helpers.TestRunUUIDLabelKey: helpers.TestRunUUID}),
 				Networks: []loadbalancer.Network{{
 					NetworkId: utils.Ptr(conf.Prod.Networks.Default.ID),
 					Role:      loadbalancer.NETWORKROLE_ROLE_LISTENERS_AND_TARGETS.Ptr(),
