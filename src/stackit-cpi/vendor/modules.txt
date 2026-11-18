@@ -17,7 +17,7 @@ github.com/bmatcuk/doublestar
 # github.com/charlievieth/fs v0.0.3
 ## explicit; go 1.18
 github.com/charlievieth/fs
-# github.com/cloudfoundry/bosh-agent/v2 v2.924.0
+# github.com/cloudfoundry/bosh-agent/v2 v2.926.0
 ## explicit; go 1.26.10
 github.com/cloudfoundry/bosh-agent/v2/agent/logstarprovider
 github.com/cloudfoundry/bosh-agent/v2/infrastructure
