@@ -3,7 +3,7 @@ module github.com/stackitcloud/stackit-cpi
 go 1.27.4
 
 require (
-	github.com/cloudfoundry/bosh-agent/v2 v2.924.0
+	github.com/cloudfoundry/bosh-agent/v2 v2.926.0
 	github.com/google/uuid v1.6.0
 	github.com/onsi/ginkgo/v2 v2.34.0
 	github.com/onsi/gomega v1.44.0
