@@ -1,0 +1,56 @@
+- name: stemcell
+  path: /resource_pools/name=vms/stemcell?
+  type: replace
+  value:
+    sha1: ((stemcell_sha))
+    url: ((stemcell_url))
+- path: /resource_pools/name=vms/cloud_properties?
+  type: replace
+  value:
+    availability_zone: ((az))
+    instance_type: ((bosh_vm_flavor))
+    boot_from_volume: true
+    root_disk:
+      size: ((root_disk_size))
+- path: /networks/name=default/subnets/0/cloud_properties?
+  type: replace
+  value:
+    net_id: ((net_id))
+- path: /instance_groups/name=bosh/jobs/-
+  type: replace
+  value:
+    name: stackit_cpi
+    release: bosh-stackit-cpi
+- path: /instance_groups/name=bosh/properties/director/cpi_job?
+  type: replace
+  value: stackit_cpi
+- path: /cloud_provider/template?
+  type: replace
+  value:
+    name: stackit_cpi
+    release: bosh-stackit-cpi
+- path: /instance_groups/name=bosh/properties/agent/mbus?
+  type: replace
+  value:
+    urls: [ "nats://((internal_ip)):4222" ]
+- path: /instance_groups/name=bosh/properties/stackit?
+  type: replace
+  value: &value
+    project_id:              ((stackit_project_id))
+    region:                  ((stackit_region))
+    service_account_json:    ((stackit_service_account_json))
+    default_ssh_key_name:        ((default_ssh_key_name))
+    default_security_groups: ((default_security_groups))
+    stage_profile_json: ((stage_profile_json))
+    human_readable_vm_names: true
+    auto_fix_name_and_labels: true
+    org_id: "workaround"
+- path: /cloud_provider/properties/stackit?
+  type: replace
+  value: *value
+- path: /cloud_provider/properties/agent/mbus
+  type: replace
+  value:
+    urls: [https://mbus:((mbus_bootstrap_password))@0.0.0.0:6868]
+    cert: ((mbus_bootstrap_ssl))
+

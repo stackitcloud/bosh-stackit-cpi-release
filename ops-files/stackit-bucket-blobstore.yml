@@ -1,0 +1,40 @@
+- type: replace
+  path: /instance_groups/name=bosh/properties/blobstore?
+  value:
+    provider: s3
+    bucket_name: ((s3_bucket_name))
+    access_key_id: ((s3_access_key_id))
+    secret_access_key: ((s3_secret_access_key))
+    credentials_source: "static"
+    host: object.storage.((s3_region)).onstackit.cloud
+    s3_host_style: true
+    s3_port: 443
+    s3_region: ((s3_region))
+    s3_signature_version: "4"
+    ssl_verify_peer: true
+    use_ssl: true
+    multipart_upload: true
+- type: replace
+  path: /instance_groups/name=bosh/properties/agent/env/bosh/blobstores
+  value:
+  - provider: s3
+    options:
+      bucket_name: ((s3_bucket_name))
+      access_key_id: ((s3_access_key_id))
+      secret_access_key: ((s3_secret_access_key))
+      region: ((s3_region))
+      credentials_source: "static"
+      host: "object.storage.((s3_region)).onstackit.cloud/"
+      port: 443
+      ssl_verify_peer: true
+      use_ssl: true
+      signature_version: "4"
+      multipart_upload: true
+- type: remove
+  path: /variables/name=blobstore_ca?
+
+- type: remove
+  path: /variables/name=blobstore_server_tls?
+
+- type: remove
+  path: /instance_groups/name=bosh/jobs/name=blobstore
