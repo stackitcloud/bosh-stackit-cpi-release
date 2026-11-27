@@ -110,6 +110,7 @@ jobs:
   - in_parallel:
     - get: bosh-package-golang-release
       trigger: true
+    - get: bosh-stackit-cpi-release-develop
   - in_parallel:
     - load_var: current_tag
       file: bosh-package-golang-release/.git/ref
@@ -138,7 +139,6 @@ jobs:
 
   - load_var: current_go_version
     file: go-version/version
-  - get: bosh-stackit-cpi-release-develop
 
   - task: bump-vendored-golang-release
     config:
@@ -223,13 +223,15 @@ jobs:
 #---- test jobs ----
 - name: integration-test
   plan:
-  - get: bosh-stackit-cpi-release-pull-request-approved
-    trigger: true
+  - in_parallel:
+    - get: bosh-stackit-cpi-release-develop
+    - get: bosh-stackit-cpi-release-pull-request-approved
+      trigger: true
   - task: integration-test
     attempts: 3
     input_mapping:
       repo: bosh-stackit-cpi-release-pull-request-approved
-    file: bosh-stackit-cpi-release-pull-request-approved/ci/tasks/integration-test/task.yml
+    file: bosh-stackit-cpi-release-develop/ci/tasks/integration-test/task.yml
     params:
       TEST_CONFIG: ((integration-creds))
     on_success:
@@ -307,10 +309,11 @@ jobs:
       trigger: true
     - put: stackit-cpi-release-version
       params: {pre: alpha}
+    - get: bosh-stackit-cpi-release-develop
   - load_var: dev-release-version
     file: stackit-cpi-release-version/version
     format: trim
-  - file: bosh-stackit-cpi-release-pull-request-approved/ci/tasks/build-dev-release/task.yml
+  - file: bosh-stackit-cpi-release-develop/ci/tasks/build-dev-release/task.yml
     input_mapping:
       repo: bosh-stackit-cpi-release-pull-request-approved
     params:
@@ -367,10 +370,10 @@ jobs:
       trigger: true
       passed: [build-dev-release]
     - get: stackit-cpi-release-version
-    - get: stackit-envs
+    - get: bosh-stackit-cpi-release-develop
     - get: prometheus-boshrelease
   - task: read-from-secretsmanager
-    file: bosh-stackit-cpi-release-pull-request-approved/ci/tasks/read-from-secrets-manager/task.yml
+    file: bosh-stackit-cpi-release-develop/ci/tasks/read-from-secrets-manager/task.yml
     input_mapping:
       repo: bosh-stackit-cpi-release-pull-request-approved
     params:
@@ -415,14 +418,14 @@ jobs:
   - task: create-env
     input_mapping:
       repo: bosh-stackit-cpi-release-pull-request-approved
-    file: bosh-stackit-cpi-release-pull-request-approved/ci/tasks/create-env/task.yml
+    file: bosh-stackit-cpi-release-develop/ci/tasks/create-env/task.yml
     params:
       TERRAFORM_OUTPUT: ((.:tf_output))
       MANIFEST: ./bosh-deployment/bosh.yml
       OPS:
-      - stackit-envs/ops-files/bosh/stackit-bucket-blobstore.yml
-      - stackit-envs/ops-files/bosh/cpi.yml
-      - stackit-envs/ops-files/bosh/dev-cpi.yml
+      - bosh-stackit-cpi-release-pull-request-approved/ops-files/stackit-bucket-blobstore.yml
+      - bosh-stackit-cpi-release-pull-request-approved/ops-files/cpi.yml
+      - bosh-stackit-cpi-release-pull-request-approved/ops-files/dev-cpi.yml
       - bosh-deployment/uaa.yml
       - bosh-deployment/credhub.yml
       - bosh-deployment/jumpbox-user.yml
@@ -450,7 +453,7 @@ jobs:
         status: success
         context: create-env
   - task: write-bosh-state
-    file: bosh-stackit-cpi-release-pull-request-approved/ci/tasks/write-to-secrets-manager/task.yml
+    file: bosh-stackit-cpi-release-develop/ci/tasks/write-to-secrets-manager/task.yml
     input_mapping:
       repo: bosh-stackit-cpi-release-pull-request-approved
     params:
@@ -466,6 +469,7 @@ jobs:
   serial: true
   plan:
   - in_parallel:
+    - get: bosh-stackit-cpi-release-develop
     - get: stemcell
     - get: bosh-stackit-cpi-release-pull-request-approved
       passed: [ test-create-env ]
@@ -474,7 +478,7 @@ jobs:
       trigger: true
       passed: [ test-create-env ]
   - task: read-from-secretsmanager
-    file: bosh-stackit-cpi-release-pull-request-approved/ci/tasks/read-from-secrets-manager/task.yml
+    file: bosh-stackit-cpi-release-develop/ci/tasks/read-from-secrets-manager/task.yml
     input_mapping:
       repo: bosh-stackit-cpi-release-pull-request-approved
     params:
@@ -485,7 +489,7 @@ jobs:
   - put: dummy-deployment
     params:
       source_file: *bosh_resource_file_path
-      manifest: bosh-stackit-cpi-release-pull-request-approved/ci/assets/dummy-deployment.yml
+      manifest: bosh-stackit-cpi-release-develop/ci/assets/dummy-deployment.yml
       vars:
         stemcell_os: ubuntu-noble
         az: az-1
@@ -505,7 +509,7 @@ jobs:
       delete:
         enabled: true
       source_file: *bosh_resource_file_path
-      manifest: bosh-stackit-cpi-release-pull-request-approved/ci/assets/dummy-deployment.yml
+      manifest: bosh-stackit-cpi-release-develop/ci/assets/dummy-deployment.yml
       vars:
         stemcell_os: ubuntu-noble
         az: az-1
@@ -523,6 +527,7 @@ jobs:
 
 - name: merge-pr
   plan:
+  - get: bosh-stackit-cpi-release-develop
   - get: bosh-stackit-cpi-release-pull-request-approved
     passed: [ test-dummy-deployment ]
     trigger: true
@@ -665,13 +670,6 @@ resources:
     uri: https://dev.azure.com/schwarzit/schwarzit.stackit-appcloud/_git/concourse-pipelines
     username: ((azure-dev-user))
   type: git
-- name: stackit-envs
-  type: git
-  source:
-    branch: main
-    password: ((azure-dev-token))
-    uri: https://schwarzit@dev.azure.com/schwarzit/schwarzit.stackit-appcloud/_git/scf-oss-c5-no-vendor
-    username: ((azure-dev-user))
 - name: bosh-deployment
   type: git
   source:

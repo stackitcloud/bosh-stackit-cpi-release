@@ -1,0 +1,8 @@
+- type: replace
+  path: /releases/name=bosh-stackit-cpi?
+  value:
+    name: bosh-stackit-cpi
+    url: ((bosh-stackit-cpi-release-url))
+    version: ((bosh-stackit-cpi-release-version))
+    sha1: ((bosh-stackit-cpi-release-sha1))
+
