@@ -6,7 +6,7 @@ image_resource:
     tag: latest
 inputs:
 - name: repo
-- name: stackit-envs
+- name: bosh-stackit-cpi-release-develop
 - name: bosh-deployment
 - name: prometheus-boshrelease
 - name: data
