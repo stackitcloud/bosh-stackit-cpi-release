@@ -2,10 +2,10 @@ platform: linux
 image_resource:
   type: registry-image
   source:
-    repository: schwarzit-xx-sit-appcloud-docker-local.jfrog.io/stackit-cf-deployment-concourse-tasks
-    username: ((jfrog_user))
-    password: ((jfrog_password))
-    tag: v0.0.14
+    repository: registry.onstackit.cloud/scf-images/stackit-cf-deployment-concourse-tasks
+    username: ((harbor.username))
+    password: ((harbor.password))
+    tag: v0.0.23
 container_limits:
   cpu: 2
   memory: 1gb
