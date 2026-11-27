@@ -423,9 +423,9 @@ jobs:
       TERRAFORM_OUTPUT: ((.:tf_output))
       MANIFEST: ./bosh-deployment/bosh.yml
       OPS:
-      - bosh-stackit-cpi-release-pull-request-approved/ops-files/stackit-bucket-blobstore.yml
-      - bosh-stackit-cpi-release-pull-request-approved/ops-files/cpi.yml
-      - bosh-stackit-cpi-release-pull-request-approved/ops-files/dev-cpi.yml
+      - bosh-stackit-cpi-release-develop/ops-files/stackit-bucket-blobstore.yml
+      - bosh-stackit-cpi-release-develop/ops-files/cpi.yml
+      - bosh-stackit-cpi-release-develop/ops-files/dev-cpi.yml
       - bosh-deployment/uaa.yml
       - bosh-deployment/credhub.yml
       - bosh-deployment/jumpbox-user.yml
