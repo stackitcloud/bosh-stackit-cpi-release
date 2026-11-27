@@ -146,10 +146,10 @@ jobs:
       image_resource:
         type: registry-image
         source:
-          repository: schwarzit-xx-sit-appcloud-docker-local.jfrog.io/stackit-cf-deployment-concourse-tasks
-          username: ((jfrog_user))
-          password: ((jfrog_password))
-          tag: v0.0.19
+          repository: registry.onstackit.cloud/scf-images/stackit-cf-deployment-concourse-tasks
+          tag: v0.0.23
+          username: ((harbor.username))
+          password: ((harbor.password))
       inputs:
       - name: bosh-package-golang-release
       - name: bosh-stackit-cpi-release-develop
@@ -332,10 +332,10 @@ jobs:
       image_resource:
         type: registry-image
         source:
-          repository: schwarzit-xx-sit-appcloud-docker-local.jfrog.io/stackit-cf-deployment-concourse-tasks
-          username: ((jfrog_user))
-          password: ((jfrog_password))
-          tag: v0.0.19
+          repository: registry.onstackit.cloud/scf-images/stackit-cf-deployment-concourse-tasks
+          tag: v0.0.23
+          username: ((harbor.username))
+          password: ((harbor.password))
       outputs:
       - name: builds
       inputs:
@@ -392,10 +392,10 @@ jobs:
       image_resource:
         type: registry-image
         source:
-          repository: schwarzit-xx-sit-appcloud-docker-local.jfrog.io/stackit-cf-deployment-concourse-tasks
-          username: ((jfrog_user))
-          password: ((jfrog_password))
-          tag: v0.0.19
+          repository: registry.onstackit.cloud/scf-images/stackit-cf-deployment-concourse-tasks
+          tag: v0.0.23
+          username: ((harbor.username))
+          password: ((harbor.password))
       inputs:
       - name: bosh-stackit-cpi-release-test-release
       outputs:
@@ -539,10 +539,10 @@ jobs:
       image_resource:
         type: registry-image
         source:
-          repository: schwarzit-xx-sit-appcloud-docker-local.jfrog.io/stackit-cf-deployment-concourse-tasks
-          username: ((jfrog_user))
-          password: ((jfrog_password))
-          tag: v0.0.19
+          repository: registry.onstackit.cloud/scf-images/stackit-cf-deployment-concourse-tasks
+          tag: v0.0.23
+          username: ((harbor.username))
+          password: ((harbor.password))
       params:
         GH_TOKEN: ((github_user.password))
         EMAIL: "cloudfoundry@stackit.cloud"
@@ -629,8 +629,8 @@ resources:
 - name: bosh-stackit-cpi-release-develop
   source:
     branch: develop
-    private_key: ((release-publish-deploy-key.private_key))
-    uri: git@github.com:stackitcloud/bosh-stackit-cpi-release
+    password: ((github_user.password))
+    uri: https://github.com/stackitcloud/bosh-stackit-cpi-release
     username: ((github_user.username))
     fetch_tags: true
   type: git
@@ -676,7 +676,7 @@ resources:
     uri: https://github.com/cloudfoundry/bosh-deployment
     username: ((github_user.username))
     password: ((github_user.password))
-    branch: master
+    branch: main
 - name: prometheus-boshrelease
   type: git
   source:
